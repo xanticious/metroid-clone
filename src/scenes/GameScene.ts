@@ -29,11 +29,7 @@ const BOSS_PROJECTILE_DAMAGE = 15;
 const ESCAPE_TIME = 45;
 const HEALTH_TANK_HP = 99;
 
-type GamePhase =
-  | "exploring"
-  | "bossFight"
-  | "escapeSequence"
-  | "bossDefeated";
+type GamePhase = "exploring" | "bossFight" | "escapeSequence" | "bossDefeated";
 
 interface RoomState {
   id: string;
@@ -95,7 +91,10 @@ export class GameScene extends Scene {
     this.loadRoom("intro_room_01", "spawn");
   }
 
-  private loadRoom(id: string, enterFrom: "left" | "right" | "spawn" = "spawn"): void {
+  private loadRoom(
+    id: string,
+    enterFrom: "left" | "right" | "spawn" = "spawn",
+  ): void {
     const tmx = ROOM_MAP[id];
     if (!tmx) return;
     const parsed = parseTmx(tmx);
@@ -331,7 +330,12 @@ export class GameScene extends Scene {
       const target = entity.properties["target"];
       if (!target) continue;
 
-      const door = { x: entity.x, y: entity.y, w: entity.width, h: entity.height };
+      const door = {
+        x: entity.x,
+        y: entity.y,
+        w: entity.width,
+        h: entity.height,
+      };
       if (
         pRight > door.x &&
         pLeft < door.x + door.w &&
@@ -346,11 +350,14 @@ export class GameScene extends Scene {
   }
 
   private checkExtractionPoint(): void {
-    if (this.transition.active || this.currentRoomId !== "intro_room_01") return;
+    if (this.transition.active || this.currentRoomId !== "intro_room_01")
+      return;
     const tmx = ROOM_MAP["intro_room_01"];
     if (!tmx) return;
     const parsed = parseTmx(tmx);
-    const extraction = parsed.entities.find((e) => e.type === "extraction_point");
+    const extraction = parsed.entities.find(
+      (e) => e.type === "extraction_point",
+    );
     if (!extraction) return;
     const pLeft = this.px - PLAYER_HW;
     const pRight = this.px + PLAYER_HW;
@@ -386,13 +393,19 @@ export class GameScene extends Scene {
         pBottom > ey - 20 &&
         pTop < ey + 20
       ) {
-        this.playerHp = Math.min(this.playerHp + HEALTH_TANK_HP, this.playerMaxHp);
+        this.playerHp = Math.min(
+          this.playerHp + HEALTH_TANK_HP,
+          this.playerMaxHp,
+        );
         this.room.healthTankCollected = true;
       }
     }
   }
 
-  private transitionToRoom(targetId: string, enterFrom: "left" | "right"): void {
+  private transitionToRoom(
+    targetId: string,
+    enterFrom: "left" | "right",
+  ): void {
     if (this.transition.active) return;
     this.transition.start(
       () => {
@@ -406,7 +419,10 @@ export class GameScene extends Scene {
     );
   }
 
-  private updatePhysics(dt: number, actions: ReturnType<typeof input.poll>): void {
+  private updatePhysics(
+    dt: number,
+    actions: ReturnType<typeof input.poll>,
+  ): void {
     if (this.wallJumpLockTimer > 0) {
       this.wallJumpLockTimer -= dt;
     }
@@ -484,7 +500,12 @@ export class GameScene extends Scene {
       if (!p.alive) continue;
       for (const c of this.room.crawlers) {
         if (!c.alive) continue;
-        if (p.right > c.left && p.left < c.right && p.bottom > c.top && p.top < c.bottom) {
+        if (
+          p.right > c.left &&
+          p.left < c.right &&
+          p.bottom > c.top &&
+          p.top < c.bottom
+        ) {
           c.takeDamage(1);
           p.alive = false;
           break;
@@ -499,7 +520,12 @@ export class GameScene extends Scene {
     if (!boss || !boss.alive) return;
     for (const p of this.projectiles) {
       if (!p.alive) continue;
-      if (p.right > boss.left && p.left < boss.right && p.bottom > boss.top && p.top < boss.bottom) {
+      if (
+        p.right > boss.left &&
+        p.left < boss.right &&
+        p.bottom > boss.top &&
+        p.top < boss.bottom
+      ) {
         boss.takeDamage(1);
         p.alive = false;
       }
@@ -515,7 +541,12 @@ export class GameScene extends Scene {
     const pBottom = this.py;
     for (const c of this.room.crawlers) {
       if (!c.alive) continue;
-      if (pRight > c.left && pLeft < c.right && pBottom > c.top && pTop < c.bottom) {
+      if (
+        pRight > c.left &&
+        pLeft < c.right &&
+        pBottom > c.top &&
+        pTop < c.bottom
+      ) {
         this.takeDamage(CRAWLER_CONTACT_DAMAGE);
         break;
       }
@@ -529,7 +560,12 @@ export class GameScene extends Scene {
     const pRight = this.px + PLAYER_HW;
     const pTop = this.py - PLAYER_H;
     const pBottom = this.py;
-    if (pRight > boss.left && pLeft < boss.right && pBottom > boss.top && pTop < boss.bottom) {
+    if (
+      pRight > boss.left &&
+      pLeft < boss.right &&
+      pBottom > boss.top &&
+      pTop < boss.bottom
+    ) {
       this.takeDamage(BOSS_CONTACT_DAMAGE);
     }
   }
@@ -543,7 +579,12 @@ export class GameScene extends Scene {
     const pBottom = this.py;
     for (const p of boss.projectiles) {
       if (!p.alive) continue;
-      if (pRight > p.x - 8 && pLeft < p.x + 8 && pBottom > p.y - 8 && pTop < p.y + 8) {
+      if (
+        pRight > p.x - 8 &&
+        pLeft < p.x + 8 &&
+        pBottom > p.y - 8 &&
+        pTop < p.y + 8
+      ) {
         this.takeDamage(BOSS_PROJECTILE_DAMAGE);
         p.alive = false;
         break;
@@ -679,7 +720,9 @@ export class GameScene extends Scene {
     this.bossGfx.clear();
     const boss = this.room.boss;
     if (!boss || !boss.alive) return;
-    this.bossGfx.rect(boss.left, boss.top, boss.width, boss.height).fill(boss.bodyColor);
+    this.bossGfx
+      .rect(boss.left, boss.top, boss.width, boss.height)
+      .fill(boss.bodyColor);
     this.bossGfx.rect(boss.left + 10, boss.top + 10, 12, 10).fill(0xffff00);
     this.bossGfx.rect(boss.right - 22, boss.top + 10, 12, 10).fill(0xffff00);
     if (boss.bodyColor === 0xff8800) {

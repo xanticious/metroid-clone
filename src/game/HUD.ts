@@ -79,7 +79,12 @@ export class HUD {
 
     this.timerText = new Text({
       text: "",
-      style: { fontFamily: "monospace", fontSize: 32, fill: 0xff2244, fontWeight: "bold" },
+      style: {
+        fontFamily: "monospace",
+        fontSize: 32,
+        fill: 0xff2244,
+        fontWeight: "bold",
+      },
     });
     this.timerText.anchor.set(0.5, 0);
     this.timerText.position.set(GAME_WIDTH / 2, 56);
@@ -129,7 +134,8 @@ export class HUD {
     const min = Math.floor(s / 60);
     const sec = s % 60;
     this.timerText.text = `SELF-DESTRUCT: ${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
-    this.timerText.style.fill = secondsLeft <= ESCAPE_CRITICAL_SECS ? 0xff0000 : 0xff4400;
+    this.timerText.style.fill =
+      secondsLeft <= ESCAPE_CRITICAL_SECS ? 0xff0000 : 0xff4400;
   }
 
   hideEscapeTimer(): void {
@@ -164,4 +170,3 @@ export class HUD {
     }
   }
 }
-

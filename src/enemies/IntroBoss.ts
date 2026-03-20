@@ -56,14 +56,31 @@ export class IntroBoss {
     return BOSS_MAX_HP;
   }
 
-  get left(): number { return this.x - BOSS_HW; }
-  get right(): number { return this.x + BOSS_HW; }
-  get top(): number { return this.y - BOSS_H; }
-  get bottom(): number { return this.y; }
-  get width(): number { return BOSS_W; }
-  get height(): number { return BOSS_H; }
+  get left(): number {
+    return this.x - BOSS_HW;
+  }
+  get right(): number {
+    return this.x + BOSS_HW;
+  }
+  get top(): number {
+    return this.y - BOSS_H;
+  }
+  get bottom(): number {
+    return this.y;
+  }
+  get width(): number {
+    return BOSS_W;
+  }
+  get height(): number {
+    return BOSS_H;
+  }
 
-  update(dt: number, collisions: CollisionRect[], playerX: number, playerY: number): void {
+  update(
+    dt: number,
+    collisions: CollisionRect[],
+    playerX: number,
+    playerY: number,
+  ): void {
     if (!this.alive) return;
 
     if (this.hurtTimer > 0) this.hurtTimer -= dt;
@@ -158,7 +175,13 @@ export class IntroBoss {
     const len = Math.abs(dx) || 1;
     const vx = (dx / len) * SPEED;
     const vy = 180;
-    this.projectiles.push({ x: this.x, y: this.y - BOSS_H * 0.5, vx, vy, alive: true });
+    this.projectiles.push({
+      x: this.x,
+      y: this.y - BOSS_H * 0.5,
+      vx,
+      vy,
+      alive: true,
+    });
   }
 
   private updateProjectiles(dt: number, collisions: CollisionRect[]): void {
@@ -168,8 +191,10 @@ export class IntroBoss {
       p.y += p.vy * dt;
       for (const rect of collisions) {
         if (
-          p.x + 6 > rect.x && p.x - 6 < rect.x + rect.width &&
-          p.y + 6 > rect.y && p.y - 6 < rect.y + rect.height
+          p.x + 6 > rect.x &&
+          p.x - 6 < rect.x + rect.width &&
+          p.y + 6 > rect.y &&
+          p.y - 6 < rect.y + rect.height
         ) {
           p.alive = false;
           break;
