@@ -1,10 +1,12 @@
-import { Container, Text, Graphics } from 'pixi.js';
+import { Container, Graphics } from 'pixi.js';
 import { Scene } from './Scene';
 import { input } from '../input';
 import { PauseMenu } from './PauseMenu';
 import type { GameActor } from '../state';
 import { parseTmx, type CollisionRect } from '../maps';
-import { Camera } from '../game';
+import { Camera, HUD } from '../game';
+import { PulsePistol, type Projectile } from '../weapons';
+import { Crawler } from '../enemies';
 import { CAMERA_ZOOM } from '../types';
 import introRoomTmx from '../../tiled/intro_room_01.tmx?raw';
 
@@ -19,6 +21,9 @@ const WALL_JUMP_LOCK = 0.15;
 const PLAYER_W = 24;
 const PLAYER_H = 48;
 const PLAYER_HW = PLAYER_W / 2;
+const PLAYER_MAX_HP = 99;
+const PLAYER_INV_TIME = 1.0;
+const CRAWLER_CONTACT_DAMAGE = 10;
 
 function overlapsX(
   aLeft: number,
@@ -42,7 +47,9 @@ export class GameScene extends Scene {
   private pauseMenu: PauseMenu;
   private world!: Container;
   private playerGfx!: Graphics;
-  private hud!: Text;
+  private projectileGfx!: Graphics;
+  private crawlerGfx!: Graphics;
+  private hud!: HUD;
   private camera = new Camera();
 
   private px: number;
@@ -53,6 +60,18 @@ export class GameScene extends Scene {
   private onWallLeft = false;
   private onWallRight = false;
   private wallJumpLockTimer = 0;
+  private facing: 1 | -1 = 1;
+
+  private playerHp = PLAYER_MAX_HP;
+  private readonly playerMaxHp = PLAYER_MAX_HP;
+  private playerInvTimer = 0;
+  private playerBlinkOn = true;
+  private readonly spawnX: number;
+  private readonly spawnY: number;
+
+  private weapon = new PulsePistol();
+  private projectiles: Projectile[] = [];
+  private crawlers: Crawler[] = [];
 
   private roomWidth: number;
   private roomHeight: number;
@@ -70,6 +89,14 @@ export class GameScene extends Scene {
     const spawn = room.entities.find((e) => e.type === 'player_spawn');
     this.px = spawn?.x ?? this.width / 2;
     this.py = spawn?.y ?? this.height / 2;
+    this.spawnX = this.px;
+    this.spawnY = this.py;
+
+    for (const entity of room.entities) {
+      if (entity.type === 'enemy_crawler') {
+        this.crawlers.push(new Crawler(entity.x, entity.y));
+      }
+    }
   }
 
   onEnter(): void {
@@ -86,16 +113,19 @@ export class GameScene extends Scene {
     }
     this.world.addChild(colGfx);
 
+    this.crawlerGfx = new Graphics();
+    this.world.addChild(this.crawlerGfx);
+
+    this.projectileGfx = new Graphics();
+    this.world.addChild(this.projectileGfx);
+
     this.playerGfx = new Graphics();
     this.world.addChild(this.playerGfx);
     this.drawPlayer();
 
-    this.hud = new Text({
-      text: 'HP: 99  |  Ammo: 30  |  Pulse Pistol',
-      style: { fontFamily: 'monospace', fontSize: 24, fill: 0x00ffcc },
-    });
-    this.hud.position.set(20, 16);
-    this.container.addChild(this.hud);
+    this.hud = new HUD();
+    this.container.addChild(this.hud.container);
+    this.hud.update(this.playerHp, this.playerMaxHp, null, 'Pulse Pistol');
 
     this.container.addChild(this.pauseMenu.container);
     this.pauseMenu.hide();
@@ -122,7 +152,14 @@ export class GameScene extends Scene {
       return;
     }
 
+    this.weapon.update(dt);
     this.updatePhysics(dt, actions);
+    this.updateFiring(actions);
+    this.updateProjectiles(dt);
+    this.updateCrawlers(dt);
+    this.checkProjectileCrawlerHits();
+    this.checkPlayerCrawlerContact();
+    this.updateInvincibility(dt);
 
     this.camera.update(
       this.px,
@@ -136,7 +173,10 @@ export class GameScene extends Scene {
       -this.camera.y * CAMERA_ZOOM,
     );
 
+    this.hud.update(this.playerHp, this.playerMaxHp, null, 'Pulse Pistol');
     this.drawPlayer();
+    this.drawProjectiles();
+    this.drawCrawlers();
   }
 
   private updatePhysics(
@@ -151,8 +191,14 @@ export class GameScene extends Scene {
     if (canControl) {
       const speed = actions.run ? RUN_SPEED : MOVE_SPEED;
       this.vx = 0;
-      if (actions.left) this.vx = -speed;
-      if (actions.right) this.vx = speed;
+      if (actions.left) {
+        this.vx = -speed;
+        this.facing = -1;
+      }
+      if (actions.right) {
+        this.vx = speed;
+        this.facing = 1;
+      }
     }
 
     if (actions.jump) {
@@ -178,6 +224,85 @@ export class GameScene extends Scene {
     this.py += this.vy * dt;
     this.onGround = false;
     this.resolveVertical();
+  }
+
+  private updateFiring(actions: ReturnType<typeof input.poll>): void {
+    if (!actions.fire) return;
+    const muzzleX = this.px + this.facing * (PLAYER_HW + 2);
+    const muzzleY = this.py - PLAYER_H * 0.5;
+    const projectile = this.weapon.tryFire(
+      muzzleX,
+      muzzleY,
+      this.facing,
+      actions.aimUp,
+      actions.aimDiagUp,
+      actions.aimDiagDown,
+      actions.aimDown,
+    );
+    if (projectile) this.projectiles.push(projectile);
+  }
+
+  private updateProjectiles(dt: number): void {
+    for (const p of this.projectiles) {
+      p.update(dt, this.collisions);
+    }
+    this.projectiles = this.projectiles.filter((p) => p.alive);
+  }
+
+  private updateCrawlers(dt: number): void {
+    for (const c of this.crawlers) {
+      c.update(dt, this.collisions);
+    }
+  }
+
+  private checkProjectileCrawlerHits(): void {
+    for (const p of this.projectiles) {
+      if (!p.alive) continue;
+      for (const c of this.crawlers) {
+        if (!c.alive) continue;
+        if (p.right > c.left && p.left < c.right && p.bottom > c.top && p.top < c.bottom) {
+          c.takeDamage(1);
+          p.alive = false;
+          break;
+        }
+      }
+    }
+    this.projectiles = this.projectiles.filter((p) => p.alive);
+  }
+
+  private checkPlayerCrawlerContact(): void {
+    if (this.playerInvTimer > 0) return;
+    const pLeft = this.px - PLAYER_HW;
+    const pRight = this.px + PLAYER_HW;
+    const pTop = this.py - PLAYER_H;
+    const pBottom = this.py;
+    for (const c of this.crawlers) {
+      if (!c.alive) continue;
+      if (pRight > c.left && pLeft < c.right && pBottom > c.top && pTop < c.bottom) {
+        this.playerHp = Math.max(0, this.playerHp - CRAWLER_CONTACT_DAMAGE);
+        this.playerInvTimer = PLAYER_INV_TIME;
+        if (this.playerHp <= 0) this.respawnPlayer();
+        break;
+      }
+    }
+  }
+
+  private updateInvincibility(dt: number): void {
+    if (this.playerInvTimer > 0) {
+      this.playerInvTimer -= dt;
+      this.playerBlinkOn = Math.floor(this.playerInvTimer / 0.1) % 2 === 0;
+    } else {
+      this.playerBlinkOn = true;
+    }
+  }
+
+  private respawnPlayer(): void {
+    this.px = this.spawnX;
+    this.py = this.spawnY;
+    this.vx = 0;
+    this.vy = 0;
+    this.playerHp = this.playerMaxHp;
+    this.playerInvTimer = PLAYER_INV_TIME;
   }
 
   private resolveHorizontal(): void {
@@ -232,11 +357,31 @@ export class GameScene extends Scene {
 
   private drawPlayer(): void {
     this.playerGfx.clear();
+    this.playerGfx.visible = this.playerBlinkOn;
     this.playerGfx
       .rect(this.px - PLAYER_HW, this.py - PLAYER_H, PLAYER_W, PLAYER_H)
       .fill(0xff6600);
     this.playerGfx
       .rect(this.px - 6, this.py - PLAYER_H + 4, 12, 6)
       .fill(0x00ffcc);
+  }
+
+  private drawProjectiles(): void {
+    this.projectileGfx.clear();
+    for (const p of this.projectiles) {
+      this.projectileGfx.rect(p.left, p.top, 8, 4).fill(0xffff00);
+    }
+  }
+
+  private drawCrawlers(): void {
+    this.crawlerGfx.clear();
+    for (const c of this.crawlers) {
+      if (!c.alive) continue;
+      const bodyColor = c.hurtTimer > 0 ? 0xffffff : 0xff2244;
+      this.crawlerGfx.rect(c.left, c.top, c.width, c.height).fill(bodyColor);
+      // Eyes
+      this.crawlerGfx.rect(c.left + 4, c.top + 4, 4, 4).fill(0x00ffcc);
+      this.crawlerGfx.rect(c.right - 8, c.top + 4, 4, 4).fill(0x00ffcc);
+    }
   }
 }

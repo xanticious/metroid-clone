@@ -1,13 +1,14 @@
 {
     "activeFile": "intro_room_01.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "fileStates": {
         "intro_room_01.tmx": {
             "scale": 0.6085937499999999,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 1010.5263157894736,
+                "x": 956.3029525032093,
                 "y": 543.8767650834404
             }
         },

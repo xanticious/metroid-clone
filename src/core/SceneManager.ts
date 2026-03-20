@@ -1,6 +1,5 @@
 import type { Application } from 'pixi.js';
 import type { Scene } from '../scenes/Scene';
-import type { GameActor } from '../state';
 
 export type SceneFactory = (stateKey: string) => Scene | null;
 

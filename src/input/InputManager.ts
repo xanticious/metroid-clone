@@ -29,8 +29,6 @@ export interface GameActions {
   aimDown: boolean;
 }
 
-type ActionName = keyof GameActions;
-
 const GAME_KEYS = new Set([
   'ArrowLeft',
   'ArrowRight',
