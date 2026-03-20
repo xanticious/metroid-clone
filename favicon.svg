@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background -->
+  <rect width="32" height="32" rx="3" fill="#06090f"/>
+
+  <!-- Pink hair — back/top mass -->
+  <ellipse cx="16" cy="9" rx="9.5" ry="7" fill="#e8198b"/>
+  <!-- Hair sides framing face -->
+  <rect x="6" y="10" width="3.5" height="14" rx="1.5" fill="#e8198b"/>
+  <rect x="22.5" y="10" width="3.5" height="14" rx="1.5" fill="#e8198b"/>
+  <!-- Hair top tuft / fringe -->
+  <path d="M9 11 Q10 4 16 3 Q22 4 23 11" fill="#e8198b"/>
+
+  <!-- Neck -->
+  <rect x="13" y="26" width="6" height="5" rx="1" fill="#f0c8a0"/>
+
+  <!-- Face — caucasian skin -->
+  <ellipse cx="16" cy="18" rx="6.5" ry="8" fill="#f0c8a0"/>
+
+  <!-- Ear left -->
+  <ellipse cx="9.2" cy="17" rx="1.2" ry="1.8" fill="#e8b888"/>
+  <!-- Ear right — with cyan jack implant -->
+  <ellipse cx="22.8" cy="17" rx="1.2" ry="1.8" fill="#e8b888"/>
+  <rect x="22.5" y="16.2" width="2.8" height="1.2" rx="0.5" fill="#00ffee"/>
+
+  <!-- Eyebrows — pink tinted -->
+  <path d="M12 13 Q13.5 12 15 13" stroke="#c0107a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <path d="M17 13 Q18.5 12 20 13" stroke="#c0107a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+  <!-- Left eye — cybernetic cyan -->
+  <ellipse cx="13.5" cy="15.5" rx="2" ry="1.4" fill="#001c1c"/>
+  <ellipse cx="13.5" cy="15.5" rx="1.3" ry="1.1" fill="#00ffee"/>
+  <circle cx="13.5" cy="15.5" r="0.5" fill="#ffffff"/>
+  <!-- Scanline -->
+  <line x1="11.8" y1="15.5" x2="15.2" y2="15.5" stroke="#ffffff" stroke-width="0.35" opacity="0.7"/>
+
+  <!-- Right eye — normal dark iris -->
+  <ellipse cx="18.5" cy="15.5" rx="2" ry="1.4" fill="#1a0a0a"/>
+  <ellipse cx="18.5" cy="15.5" rx="1.2" ry="1.1" fill="#3a1050"/>
+  <circle cx="18.5" cy="15.5" r="0.4" fill="#ffffff"/>
+
+  <!-- Cybernetic implant lines — left cheek, magenta -->
+  <path d="M10.5 17 L12 17.8 L11.5 19.5" stroke="#ff00cc" stroke-width="0.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="11.5" cy="19.5" r="0.8" fill="#ff00cc"/>
+
+  <!-- Nose — simple -->
+  <path d="M15 17.5 Q16 19 17 17.5" stroke="#c8a080" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+
+  <!-- Lips — bright magenta -->
+  <path d="M13.2 22 Q14.5 23.2 16 22.8 Q17.5 23.2 18.8 22" stroke="#ff2288" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+
+  <!-- Cyan rim light on left jaw -->
+  <path d="M9.5 16 Q8.5 20 10 24" stroke="#00ffee" stroke-width="0.8" fill="none" opacity="0.6"/>
+</svg>
