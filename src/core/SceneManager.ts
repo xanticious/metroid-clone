@@ -1,23 +1,22 @@
-import type { Application } from "pixi.js";
-import type { Scene } from "../scenes/Scene";
-import type { GameActor } from "../state";
+import type { Application } from 'pixi.js';
+import type { Scene } from '../scenes/Scene';
+import type { GameActor } from '../state';
 
-/**
- * Manages the active scene. Listens to XState state transitions
- * and swaps scenes accordingly.
- */
+export type SceneFactory = (stateKey: string) => Scene | null;
+
 export class SceneManager {
   private currentScene: Scene | null = null;
+  private currentKey: string | null = null;
 
   constructor(
     private app: Application,
-    private actor: GameActor,
-    private sceneFactory: (stateValue: string) => Scene | null,
+    private sceneFactory: SceneFactory,
   ) {}
 
-  /** Transition to a new scene keyed by its state name. */
   transitionTo(stateKey: string): void {
-    // Tear down old scene
+    if (stateKey === this.currentKey) return;
+    this.currentKey = stateKey;
+
     if (this.currentScene) {
       this.currentScene.onExit();
       this.app.stage.removeChild(this.currentScene.container);
@@ -33,8 +32,11 @@ export class SceneManager {
     }
   }
 
-  /** Called every frame. */
   update(dt: number): void {
     this.currentScene?.update(dt);
   }
+}
+
+export function topLevelState(value: string | Record<string, unknown>): string {
+  return typeof value === 'string' ? value : Object.keys(value)[0];
 }

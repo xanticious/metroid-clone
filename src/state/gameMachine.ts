@@ -1,38 +1,33 @@
 import { setup, createActor, assign, type ActorRefFrom } from "xstate";
 import type { SaveSlot, SaveData } from "../types";
 
-// ---------------------------------------------------------------------------
-// Event definitions
-// ---------------------------------------------------------------------------
 export type GameEvent =
-  | { type: "START" }
-  | { type: "SELECT_SLOT"; slot: SaveSlot }
   | { type: "NEW_GAME" }
-  | { type: "CONTINUE_GAME"; saveData: SaveData }
+  | { type: "CONTINUE" }
+  | { type: "CREDITS" }
+  | { type: "SELECT_SLOT"; slot: SaveSlot }
+  | { type: "SLOT_NEW_GAME" }
+  | { type: "SLOT_CONTINUE"; saveData: SaveData }
   | { type: "SKIP_CINEMATIC" }
   | { type: "CINEMATIC_COMPLETE" }
   | { type: "INTRO_COMPLETE" }
   | { type: "PAUSE" }
   | { type: "RESUME" }
   | { type: "SAVE" }
+  | { type: "SAVE_COMPLETE" }
   | { type: "VIEW_MAP" }
   | { type: "CLOSE_MAP" }
   | { type: "EXIT_GAME" }
   | { type: "GAME_OVER" }
+  | { type: "VICTORY" }
   | { type: "RETURN_TO_TITLE" };
 
-// ---------------------------------------------------------------------------
-// Context
-// ---------------------------------------------------------------------------
 export interface GameContext {
   selectedSlot: SaveSlot | null;
   saveData: SaveData | null;
   isNewGame: boolean;
 }
 
-// ---------------------------------------------------------------------------
-// Machine definition
-// ---------------------------------------------------------------------------
 export const gameMachine = setup({
   types: {
     context: {} as GameContext,
@@ -48,14 +43,14 @@ export const gameMachine = setup({
   },
 
   states: {
-    // ------ Splash / Title Screen ------
     splash: {
       on: {
-        START: "saveSelect",
+        NEW_GAME: "saveSelect",
+        CONTINUE: "saveSelect",
+        CREDITS: "credits",
       },
     },
 
-    // ------ Save Slot Selection ------
     saveSelect: {
       on: {
         SELECT_SLOT: {
@@ -63,11 +58,11 @@ export const gameMachine = setup({
             selectedSlot: ({ event }) => event.slot,
           }),
         },
-        NEW_GAME: {
+        SLOT_NEW_GAME: {
           target: "openingCinematic",
           actions: assign({ isNewGame: true, saveData: null }),
         },
-        CONTINUE_GAME: {
+        SLOT_CONTINUE: {
           target: "gameplay",
           actions: assign({
             isNewGame: false,
@@ -78,7 +73,6 @@ export const gameMachine = setup({
       },
     },
 
-    // ------ Opening Cinematic ------
     openingCinematic: {
       on: {
         SKIP_CINEMATIC: "gameplay",
@@ -86,43 +80,31 @@ export const gameMachine = setup({
       },
     },
 
-    // ------ Core Gameplay ------
     gameplay: {
-      initial: "introMission",
+      initial: "exploring",
       on: {
         GAME_OVER: "gameOver",
+        VICTORY: "victory",
         EXIT_GAME: "splash",
       },
       states: {
-        introMission: {
-          on: {
-            INTRO_COMPLETE: "mainMission",
-            PAUSE: "paused",
-          },
-        },
-        mainMission: {
+        exploring: {
           on: {
             PAUSE: "paused",
+            INTRO_COMPLETE: "exploring",
           },
         },
         paused: {
           on: {
-            RESUME: "resuming",
+            RESUME: "exploring",
             SAVE: "saving",
             VIEW_MAP: "viewingMap",
             EXIT_GAME: "#game.splash",
           },
         },
-        resuming: {
-          always: [
-            // Return to wherever we came from – XState history
-            { target: "introMission" },
-          ],
-        },
         saving: {
-          // In a real impl this would invoke a save service
           on: {
-            RESUME: "resuming",
+            SAVE_COMPLETE: "paused",
           },
         },
         viewingMap: {
@@ -133,16 +115,21 @@ export const gameMachine = setup({
       },
     },
 
-    // ------ Game Over ------
     gameOver: {
       on: {
         RETURN_TO_TITLE: "splash",
-        CONTINUE_GAME: {
-          target: "gameplay",
-          actions: assign({
-            saveData: ({ event }) => event.saveData,
-          }),
-        },
+      },
+    },
+
+    victory: {
+      on: {
+        RETURN_TO_TITLE: "credits",
+      },
+    },
+
+    credits: {
+      on: {
+        RETURN_TO_TITLE: "splash",
       },
     },
   },
@@ -151,7 +138,6 @@ export const gameMachine = setup({
 export type GameMachine = typeof gameMachine;
 export type GameActor = ActorRefFrom<GameMachine>;
 
-/** Create and start the game actor */
 export function createGameActor() {
   const actor = createActor(gameMachine);
   actor.start();

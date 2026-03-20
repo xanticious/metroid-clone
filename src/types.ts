@@ -1,57 +1,44 @@
-/** Save slot identifier */
 export type SaveSlot = "A" | "B" | "C";
 
-/** Data persisted per save slot */
+export type World = "irl" | "cyberspace";
+
+export type WeaponType =
+  | "pulsePistol"
+  | "scatterShot"
+  | "railBeam"
+  | "empGrenade"
+  | "voidLance";
+
+export type Ability =
+  | "wallJump"
+  | "dash"
+  | "doubleJump"
+  | "ball"
+  | "grappleHook"
+  | "phaseShift";
+
 export interface SaveData {
   slot: SaveSlot;
-  playerName: string;
   /** Milliseconds of play time */
   playTime: number;
-  /** Map area id the player is in */
   currentArea: string;
-  /** Collected item ids */
+  currentWorld: World;
   items: string[];
-  /** Unlocked ability ids */
-  abilities: string[];
-  /** Player health */
+  abilities: Ability[];
+  weapons: WeaponType[];
   health: number;
   maxHealth: number;
-  /** Player position when saved */
+  ammo: number;
+  maxAmmo: number;
   positionX: number;
   positionY: number;
+  /** Set of visited room IDs */
+  visitedRooms: string[];
+  /** 0–100 */
+  completionPercent: number;
 }
 
-/** Available weapon types */
-export type WeaponType =
-  | "powerBeam"
-  | "missile"
-  | "superMissile"
-  | "iceBeam"
-  | "waveBeam";
-
-/** Abilities that can be acquired */
-export type Ability =
-  | "dash"
-  | "ball"
-  | "doubleJump"
-  | "wallJump"
-  | "bomb"
-  | "springBall";
-
-/** Player state at runtime */
-export interface PlayerState {
-  x: number;
-  y: number;
-  velocityX: number;
-  velocityY: number;
-  facing: "left" | "right";
-  health: number;
-  maxHealth: number;
-  weapons: WeaponType[];
-  selectedWeapon: WeaponType;
-  abilities: Ability[];
-  items: string[];
-}
-
-/** In-game menu options */
 export type MenuOption = "resume" | "save" | "viewMap" | "exitGame";
+
+export const GAME_WIDTH = 1920;
+export const GAME_HEIGHT = 1080;

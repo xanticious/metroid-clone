@@ -1,81 +1,74 @@
-import { Text, Graphics, Container } from "pixi.js";
-import { input } from "../input";
-import type { GameActor, GameEvent } from "../state";
-import type { MenuOption } from "../types";
+import { Text, Graphics, Container } from 'pixi.js';
+import { input } from '../input';
+import type { GameActor, GameEvent } from '../state';
+import type { MenuOption } from '../types';
+import { GAME_WIDTH, GAME_HEIGHT } from '../types';
 
 const MENU_ITEMS: { label: string; event: MenuOption }[] = [
-  { label: "Resume", event: "resume" },
-  { label: "Save", event: "save" },
-  { label: "View Map", event: "viewMap" },
-  { label: "Exit Game", event: "exitGame" },
+  { label: 'Resume', event: 'resume' },
+  { label: 'Save', event: 'save' },
+  { label: 'View Map', event: 'viewMap' },
+  { label: 'Exit Game', event: 'exitGame' },
 ];
 
 const MACHINE_EVENTS = {
-  resume: "RESUME",
-  save: "SAVE",
-  viewMap: "VIEW_MAP",
-  exitGame: "EXIT_GAME",
-} as const satisfies Record<MenuOption, GameEvent["type"]>;
+  resume: 'RESUME',
+  save: 'SAVE',
+  viewMap: 'VIEW_MAP',
+  exitGame: 'EXIT_GAME',
+} as const satisfies Record<MenuOption, GameEvent['type']>;
 
-/**
- * In-game pause menu overlay.
- * Rendered on top of the game scene. Controlled by arrow keys + Enter.
- */
 export class PauseMenu {
   public readonly container = new Container();
   private selectedIndex = 0;
   private cursor!: Graphics;
   private itemTexts: Text[] = [];
 
-  constructor(
-    private actor: GameActor,
-    private width: number,
-    private height: number,
-  ) {}
+  constructor(private actor: GameActor) {}
 
   show(): void {
     this.container.removeChildren();
+    this.itemTexts = [];
     this.selectedIndex = 0;
 
-    // Semi-transparent backdrop
     const backdrop = new Graphics();
     backdrop
-      .rect(0, 0, this.width, this.height)
-      .fill({ color: 0x000000, alpha: 0.7 });
+      .rect(0, 0, GAME_WIDTH, GAME_HEIGHT)
+      .fill({ color: 0x000000, alpha: 0.75 });
     this.container.addChild(backdrop);
 
-    const panelW = 280;
-    const panelH = 260;
-    const px = (this.width - panelW) / 2;
-    const py = (this.height - panelH) / 2;
+    const panelW = 400;
+    const panelH = 360;
+    const px = (GAME_WIDTH - panelW) / 2;
+    const py = (GAME_HEIGHT - panelH) / 2;
 
     const panel = new Graphics();
     panel
       .roundRect(px, py, panelW, panelH, 8)
-      .fill(0x111133)
-      .stroke({ color: 0x00ff88, width: 2 });
+      .fill(0x080818)
+      .stroke({ color: 0x00ffcc, width: 2 });
     this.container.addChild(panel);
 
     const heading = new Text({
-      text: "PAUSED",
-      style: { fontFamily: "monospace", fontSize: 26, fill: 0x00ff88 },
+      text: 'PAUSED',
+      style: { fontFamily: 'monospace', fontSize: 36, fill: 0x00ffcc },
     });
     heading.anchor.set(0.5, 0);
-    heading.position.set(this.width / 2, py + 16);
+    heading.position.set(GAME_WIDTH / 2, py + 24);
     this.container.addChild(heading);
 
     MENU_ITEMS.forEach((item, i) => {
       const t = new Text({
         text: item.label,
-        style: { fontFamily: "monospace", fontSize: 20, fill: 0xcccccc },
+        style: { fontFamily: 'monospace', fontSize: 28, fill: 0xcccccc },
       });
-      t.position.set(px + 60, py + 70 + i * 40);
+      t.position.set(px + 80, py + 100 + i * 56);
       this.container.addChild(t);
       this.itemTexts.push(t);
     });
 
     this.cursor = new Graphics();
-    this.cursor.poly([0, 0, 14, 8, 0, 16]).fill(0x00ff88);
+    this.cursor.poly([0, 0, 18, 10, 0, 20]).fill(0x00ffcc);
     this.container.addChild(this.cursor);
     this.updateCursor();
 
@@ -91,7 +84,7 @@ export class PauseMenu {
     const actions = input.poll();
 
     if (actions.menu) {
-      this.actor.send({ type: "RESUME" });
+      this.actor.send({ type: 'RESUME' });
       return;
     }
 
@@ -114,7 +107,7 @@ export class PauseMenu {
   private updateCursor(): void {
     const t = this.itemTexts[this.selectedIndex];
     if (t) {
-      this.cursor.position.set(t.x - 26, t.y + 3);
+      this.cursor.position.set(t.x - 30, t.y + 5);
     }
   }
 }

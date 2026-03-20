@@ -1,14 +1,12 @@
-import type { SaveSlot, SaveData } from "../types";
+import type { SaveSlot, SaveData } from '../types';
 
-const STORAGE_PREFIX = "smc_save_";
+const STORAGE_PREFIX = 'su_save_';
 
-/** Persist save data to localStorage. */
 export function writeSave(data: SaveData): void {
   const key = STORAGE_PREFIX + data.slot;
   localStorage.setItem(key, JSON.stringify(data));
 }
 
-/** Load save data for a slot. Returns null if empty. */
 export function loadSave(slot: SaveSlot): SaveData | null {
   const key = STORAGE_PREFIX + slot;
   const raw = localStorage.getItem(key);
@@ -20,23 +18,26 @@ export function loadSave(slot: SaveSlot): SaveData | null {
   }
 }
 
-/** Delete a save slot. */
 export function deleteSave(slot: SaveSlot): void {
   localStorage.removeItem(STORAGE_PREFIX + slot);
 }
 
-/** Create a blank save for a new game. */
 export function createNewSave(slot: SaveSlot): SaveData {
   return {
     slot,
-    playerName: "Samus",
     playTime: 0,
-    currentArea: "intro",
+    currentArea: 'underworks',
+    currentWorld: 'irl',
     items: [],
     abilities: [],
+    weapons: ['pulsePistol'],
     health: 99,
     maxHealth: 99,
+    ammo: 30,
+    maxAmmo: 30,
     positionX: 100,
     positionY: 400,
+    visitedRooms: [],
+    completionPercent: 0,
   };
 }

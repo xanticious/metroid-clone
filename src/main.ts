@@ -1,20 +1,18 @@
-import { Application } from "pixi.js";
-import { createGameActor } from "./state";
-import { SceneManager } from "./core/SceneManager";
-import { input } from "./input";
+import { Application } from 'pixi.js';
+import { createGameActor } from './state';
+import { SceneManager, topLevelState } from './core';
+import { input } from './input';
+import { GAME_WIDTH, GAME_HEIGHT } from './types';
 import {
   SplashScene,
   SaveSelectScene,
   CinematicScene,
   GameScene,
-} from "./scenes";
-import type { Scene } from "./scenes/Scene";
-
-const GAME_WIDTH = 800;
-const GAME_HEIGHT = 600;
+  CreditsScene,
+} from './scenes';
+import type { Scene } from './scenes/Scene';
 
 async function bootstrap() {
-  // ---- PixiJS Application ----
   const app = new Application();
   await app.init({
     width: GAME_WIDTH,
@@ -25,54 +23,58 @@ async function bootstrap() {
     autoDensity: true,
   });
   document.body.appendChild(app.canvas);
+  scaleToFit(app.canvas);
+  window.addEventListener('resize', () => scaleToFit(app.canvas));
 
-  // ---- Input ----
   input.attach(window);
 
-  // ---- XState Actor ----
   const actor = createGameActor();
 
-  // ---- Scene factory ----
   function sceneForState(stateKey: string): Scene | null {
     switch (stateKey) {
-      case "splash":
-        return new SplashScene(actor, GAME_WIDTH, GAME_HEIGHT);
-      case "saveSelect":
-        return new SaveSelectScene(actor, GAME_WIDTH, GAME_HEIGHT);
-      case "openingCinematic":
-        return new CinematicScene(actor, GAME_WIDTH, GAME_HEIGHT);
-      case "gameplay":
-        return new GameScene(actor, GAME_WIDTH, GAME_HEIGHT);
-      case "gameOver":
-        // TODO: dedicated Game Over scene
-        return new SplashScene(actor, GAME_WIDTH, GAME_HEIGHT);
+      case 'splash':
+        return new SplashScene(actor);
+      case 'saveSelect':
+        return new SaveSelectScene(actor);
+      case 'openingCinematic':
+        return new CinematicScene(actor);
+      case 'gameplay':
+        return new GameScene(actor);
+      case 'credits':
+        return new CreditsScene(actor);
+      case 'gameOver':
+        return new SplashScene(actor);
+      case 'victory':
+        return new CreditsScene(actor);
       default:
         return null;
     }
   }
 
-  // ---- Scene Manager ----
-  const sceneManager = new SceneManager(app, actor, sceneForState);
-  sceneManager.transitionTo("splash");
+  const sceneManager = new SceneManager(app, sceneForState);
+  sceneManager.transitionTo('splash');
 
-  // Subscribe to state changes and swap scenes
-  let previousState = "splash";
   actor.subscribe((snapshot) => {
-    // Get the top-level state key
-    const value = snapshot.value;
-    const topLevel = typeof value === "string" ? value : Object.keys(value)[0];
-    if (topLevel && topLevel !== previousState) {
-      previousState = topLevel;
-      sceneManager.transitionTo(topLevel);
-    }
+    const stateKey = topLevelState(snapshot.value);
+    sceneManager.transitionTo(stateKey);
   });
 
-  // ---- Game Loop ----
   app.ticker.add((ticker) => {
-    const dt = ticker.deltaTime / 60; // deltaTime is in frames at 60fps; convert to seconds
+    const dt = ticker.deltaTime / 60;
     sceneManager.update(dt);
     input.endFrame();
   });
+}
+
+function scaleToFit(canvas: HTMLCanvasElement): void {
+  const scaleX = window.innerWidth / GAME_WIDTH;
+  const scaleY = window.innerHeight / GAME_HEIGHT;
+  const scale = Math.min(scaleX, scaleY);
+  canvas.style.width = `${GAME_WIDTH * scale}px`;
+  canvas.style.height = `${GAME_HEIGHT * scale}px`;
+  canvas.style.position = 'absolute';
+  canvas.style.left = `${(window.innerWidth - GAME_WIDTH * scale) / 2}px`;
+  canvas.style.top = `${(window.innerHeight - GAME_HEIGHT * scale) / 2}px`;
 }
 
 bootstrap().catch(console.error);

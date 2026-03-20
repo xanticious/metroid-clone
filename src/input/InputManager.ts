@@ -22,66 +22,58 @@ export interface GameActions {
   fire: boolean;
   cycleWeapon: boolean;
   menu: boolean;
-  confirm: boolean; // Enter  – for menu / dialog confirm
+  confirm: boolean;
+  aimUp: boolean;
+  aimDiagUp: boolean;
+  aimDiagDown: boolean;
+  aimDown: boolean;
 }
 
 type ActionName = keyof GameActions;
 
-const _EMPTY_ACTIONS: Readonly<GameActions> = Object.freeze({
-  left: false,
-  right: false,
-  up: false,
-  down: false,
-  run: false,
-  jump: false,
-  fire: false,
-  cycleWeapon: false,
-  menu: false,
-  confirm: false,
-});
-
-/** Keys that should be "just pressed" – only true for a single poll cycle */
-const _ONE_SHOT_ACTIONS: ReadonlySet<ActionName> = new Set([
-  "cycleWeapon",
-  "menu",
-  "confirm",
+const GAME_KEYS = new Set([
+  'ArrowLeft',
+  'ArrowRight',
+  'ArrowUp',
+  'ArrowDown',
+  'Space',
+  'ShiftLeft',
+  'Tab',
+  'Escape',
+  'Enter',
+  'ControlLeft',
+  'ControlRight',
+  'KeyA',
+  'KeyS',
+  'KeyD',
+  'KeyF',
 ]);
 
 export class InputManager {
-  /** Raw key-down state keyed by `event.code` */
   private keys = new Map<string, boolean>();
-
-  /** Keys pressed this frame (for one-shot detection) */
   private justPressed = new Set<string>();
-
-  /** Keys already consumed by a one-shot read */
   private consumed = new Set<string>();
-
-  /** Timestamp of last Down press (for ball-mode double-tap) */
   private lastDownPressTime = 0;
-  /** True when a double-tap-down was detected this frame */
   public doubleTapDown = false;
 
   private readonly DOUBLE_TAP_MS = 250;
 
   attach(target: EventTarget = window): void {
-    target.addEventListener("keydown", this.onKeyDown);
-    target.addEventListener("keyup", this.onKeyUp);
+    target.addEventListener('keydown', this.onKeyDown);
+    target.addEventListener('keyup', this.onKeyUp);
   }
 
   detach(target: EventTarget = window): void {
-    target.removeEventListener("keydown", this.onKeyDown);
-    target.removeEventListener("keyup", this.onKeyUp);
+    target.removeEventListener('keydown', this.onKeyDown);
+    target.removeEventListener('keyup', this.onKeyUp);
   }
 
-  /** Call once per frame AFTER reading `poll()` to reset one-shot state. */
   endFrame(): void {
     this.justPressed.clear();
     this.consumed.clear();
     this.doubleTapDown = false;
   }
 
-  /** Snapshot current actions. */
   poll(): GameActions {
     const held = (code: string) => this.keys.get(code) ?? false;
     const just = (code: string) => {
@@ -92,28 +84,29 @@ export class InputManager {
       return false;
     };
 
-    const ctrl = held("ControlLeft") || held("ControlRight");
+    const ctrl = held('ControlLeft') || held('ControlRight');
 
     return {
-      left: held("ArrowLeft"),
-      right: held("ArrowRight"),
-      up: held("ArrowUp"),
-      down: held("ArrowDown"),
-      run: ctrl && (held("ArrowLeft") || held("ArrowRight")),
-      jump: held("Space") || held("ArrowUp"),
-      fire: held("ShiftLeft"),
-      cycleWeapon: just("Tab"),
-      menu: just("Escape"),
-      confirm: just("Enter"),
+      left: held('ArrowLeft'),
+      right: held('ArrowRight'),
+      up: just('ArrowUp'),
+      down: just('ArrowDown'),
+      run: ctrl && (held('ArrowLeft') || held('ArrowRight')),
+      jump: just('Space') || just('ArrowUp'),
+      fire: held('ShiftLeft'),
+      cycleWeapon: just('Tab'),
+      menu: just('Escape'),
+      confirm: just('Enter'),
+      aimUp: held('KeyA'),
+      aimDiagUp: held('KeyS'),
+      aimDiagDown: held('KeyD'),
+      aimDown: held('KeyF'),
     };
   }
 
-  // ------ internal handlers ------
-
   private onKeyDown = (e: Event): void => {
     const ke = e as KeyboardEvent;
-    // Prevent browser defaults for game keys
-    if (this.isGameKey(ke.code)) {
+    if (GAME_KEYS.has(ke.code)) {
       ke.preventDefault();
     }
 
@@ -122,8 +115,7 @@ export class InputManager {
     }
     this.keys.set(ke.code, true);
 
-    // Double-tap down detection
-    if (ke.code === "ArrowDown") {
+    if (ke.code === 'ArrowDown') {
       const now = performance.now();
       if (now - this.lastDownPressTime < this.DOUBLE_TAP_MS) {
         this.doubleTapDown = true;
@@ -135,23 +127,6 @@ export class InputManager {
   private onKeyUp = (e: Event): void => {
     this.keys.set((e as KeyboardEvent).code, false);
   };
-
-  private isGameKey(code: string): boolean {
-    return [
-      "ArrowLeft",
-      "ArrowRight",
-      "ArrowUp",
-      "ArrowDown",
-      "Space",
-      "ShiftLeft",
-      "Tab",
-      "Escape",
-      "Enter",
-      "ControlLeft",
-      "ControlRight",
-    ].includes(code);
-  }
 }
 
-/** Singleton input manager */
 export const input = new InputManager();
