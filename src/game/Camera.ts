@@ -1,4 +1,4 @@
-import { GAME_WIDTH, GAME_HEIGHT } from '../types';
+import { GAME_WIDTH, GAME_HEIGHT, CAMERA_ZOOM } from '../types';
 
 export class Camera {
   x = 0;
@@ -10,13 +10,9 @@ export class Camera {
     roomWidth: number,
     roomHeight: number,
   ): void {
-    this.x = Math.max(
-      0,
-      Math.min(targetX - GAME_WIDTH / 2, roomWidth - GAME_WIDTH),
-    );
-    this.y = Math.max(
-      0,
-      Math.min(targetY - GAME_HEIGHT / 2, roomHeight - GAME_HEIGHT),
-    );
+    const viewW = GAME_WIDTH / CAMERA_ZOOM;
+    const viewH = GAME_HEIGHT / CAMERA_ZOOM;
+    this.x = Math.max(0, Math.min(targetX - viewW / 2, roomWidth - viewW));
+    this.y = Math.max(0, Math.min(targetY - viewH / 2, roomHeight - viewH));
   }
 }

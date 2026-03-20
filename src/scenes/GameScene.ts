@@ -5,6 +5,7 @@ import { PauseMenu } from './PauseMenu';
 import type { GameActor } from '../state';
 import { parseTmx, type CollisionRect } from '../maps';
 import { Camera } from '../game';
+import { CAMERA_ZOOM } from '../types';
 import introRoomTmx from '../../tiled/intro_room_01.tmx?raw';
 
 const GRAVITY = 900;
@@ -129,7 +130,11 @@ export class GameScene extends Scene {
       this.roomWidth,
       this.roomHeight,
     );
-    this.world.position.set(-this.camera.x, -this.camera.y);
+    this.world.scale.set(CAMERA_ZOOM);
+    this.world.position.set(
+      -this.camera.x * CAMERA_ZOOM,
+      -this.camera.y * CAMERA_ZOOM,
+    );
 
     this.drawPlayer();
   }
