@@ -1,5 +1,5 @@
-import type { Application } from 'pixi.js';
-import type { Scene } from '../scenes/Scene';
+import type { Application } from "pixi.js";
+import type { Scene } from "../scenes/Scene";
 
 export type SceneFactory = (stateKey: string) => Scene | null;
 
@@ -37,5 +37,5 @@ export class SceneManager {
 }
 
 export function topLevelState(value: string | Record<string, unknown>): string {
-  return typeof value === 'string' ? value : Object.keys(value)[0];
+  return typeof value === "string" ? value : Object.keys(value)[0];
 }

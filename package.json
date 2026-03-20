@@ -19,7 +19,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "oxlint --type-aware --ignore-pattern \"tiled/**\"",
+    "lint": "oxlint --type-aware",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "validate": "npm run lint && npm run test"

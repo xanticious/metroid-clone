@@ -1,7 +1,7 @@
-import { Text, Graphics } from 'pixi.js';
-import { Scene } from './Scene';
-import { input } from '../input';
-import type { GameActor } from '../state';
+import { Text, Graphics } from "pixi.js";
+import { Scene } from "./Scene";
+import { input } from "../input";
+import type { GameActor } from "../state";
 
 export class CreditsScene extends Scene {
   constructor(actor: GameActor) {
@@ -14,9 +14,9 @@ export class CreditsScene extends Scene {
     this.container.addChild(bg);
 
     const title = new Text({
-      text: 'SUBLEVEL UPRISING',
+      text: "SUBLEVEL UPRISING",
       style: {
-        fontFamily: 'monospace',
+        fontFamily: "monospace",
         fontSize: 48,
         fill: 0x00ffcc,
       },
@@ -26,9 +26,9 @@ export class CreditsScene extends Scene {
     this.container.addChild(title);
 
     const credit = new Text({
-      text: 'A cyberpunk Metroidvania experience',
+      text: "A cyberpunk Metroidvania experience",
       style: {
-        fontFamily: 'monospace',
+        fontFamily: "monospace",
         fontSize: 28,
         fill: 0x888888,
       },
@@ -38,8 +38,8 @@ export class CreditsScene extends Scene {
     this.container.addChild(credit);
 
     const hint = new Text({
-      text: 'Press ENTER to return to title',
-      style: { fontFamily: 'monospace', fontSize: 20, fill: 0x444444 },
+      text: "Press ENTER to return to title",
+      style: { fontFamily: "monospace", fontSize: 20, fill: 0x444444 },
     });
     hint.anchor.set(0.5);
     hint.position.set(this.width / 2, this.height * 0.7);
@@ -49,7 +49,7 @@ export class CreditsScene extends Scene {
   update(_dt: number): void {
     const actions = input.poll();
     if (actions.confirm || actions.menu) {
-      this.actor.send({ type: 'RETURN_TO_TITLE' });
+      this.actor.send({ type: "RETURN_TO_TITLE" });
     }
   }
 }

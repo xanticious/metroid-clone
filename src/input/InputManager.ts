@@ -30,21 +30,21 @@ export interface GameActions {
 }
 
 const GAME_KEYS = new Set([
-  'ArrowLeft',
-  'ArrowRight',
-  'ArrowUp',
-  'ArrowDown',
-  'Space',
-  'ShiftLeft',
-  'Tab',
-  'Escape',
-  'Enter',
-  'ControlLeft',
-  'ControlRight',
-  'KeyA',
-  'KeyS',
-  'KeyD',
-  'KeyF',
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowUp",
+  "ArrowDown",
+  "Space",
+  "ShiftLeft",
+  "Tab",
+  "Escape",
+  "Enter",
+  "ControlLeft",
+  "ControlRight",
+  "KeyA",
+  "KeyS",
+  "KeyD",
+  "KeyF",
 ]);
 
 export class InputManager {
@@ -57,13 +57,13 @@ export class InputManager {
   private readonly DOUBLE_TAP_MS = 250;
 
   attach(target: EventTarget = window): void {
-    target.addEventListener('keydown', this.onKeyDown);
-    target.addEventListener('keyup', this.onKeyUp);
+    target.addEventListener("keydown", this.onKeyDown);
+    target.addEventListener("keyup", this.onKeyUp);
   }
 
   detach(target: EventTarget = window): void {
-    target.removeEventListener('keydown', this.onKeyDown);
-    target.removeEventListener('keyup', this.onKeyUp);
+    target.removeEventListener("keydown", this.onKeyDown);
+    target.removeEventListener("keyup", this.onKeyUp);
   }
 
   endFrame(): void {
@@ -82,23 +82,23 @@ export class InputManager {
       return false;
     };
 
-    const ctrl = held('ControlLeft') || held('ControlRight');
+    const ctrl = held("ControlLeft") || held("ControlRight");
 
     return {
-      left: held('ArrowLeft'),
-      right: held('ArrowRight'),
-      up: just('ArrowUp'),
-      down: just('ArrowDown'),
-      run: ctrl && (held('ArrowLeft') || held('ArrowRight')),
-      jump: just('Space') || just('ArrowUp'),
-      fire: held('ShiftLeft'),
-      cycleWeapon: just('Tab'),
-      menu: just('Escape'),
-      confirm: just('Enter'),
-      aimUp: held('KeyA'),
-      aimDiagUp: held('KeyS'),
-      aimDiagDown: held('KeyD'),
-      aimDown: held('KeyF'),
+      left: held("ArrowLeft"),
+      right: held("ArrowRight"),
+      up: just("ArrowUp"),
+      down: just("ArrowDown"),
+      run: ctrl && (held("ArrowLeft") || held("ArrowRight")),
+      jump: just("Space") || just("ArrowUp"),
+      fire: held("ShiftLeft"),
+      cycleWeapon: just("Tab"),
+      menu: just("Escape"),
+      confirm: just("Enter"),
+      aimUp: held("KeyA"),
+      aimDiagUp: held("KeyS"),
+      aimDiagDown: held("KeyD"),
+      aimDown: held("KeyF"),
     };
   }
 
@@ -113,7 +113,7 @@ export class InputManager {
     }
     this.keys.set(ke.code, true);
 
-    if (ke.code === 'ArrowDown') {
+    if (ke.code === "ArrowDown") {
       const now = performance.now();
       if (now - this.lastDownPressTime < this.DOUBLE_TAP_MS) {
         this.doubleTapDown = true;

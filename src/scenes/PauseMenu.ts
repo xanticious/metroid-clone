@@ -1,22 +1,22 @@
-import { Text, Graphics, Container } from 'pixi.js';
-import { input } from '../input';
-import type { GameActor, GameEvent } from '../state';
-import type { MenuOption } from '../types';
-import { GAME_WIDTH, GAME_HEIGHT } from '../types';
+import { Text, Graphics, Container } from "pixi.js";
+import { input } from "../input";
+import type { GameActor, GameEvent } from "../state";
+import type { MenuOption } from "../types";
+import { GAME_WIDTH, GAME_HEIGHT } from "../types";
 
 const MENU_ITEMS: { label: string; event: MenuOption }[] = [
-  { label: 'Resume', event: 'resume' },
-  { label: 'Save', event: 'save' },
-  { label: 'View Map', event: 'viewMap' },
-  { label: 'Exit Game', event: 'exitGame' },
+  { label: "Resume", event: "resume" },
+  { label: "Save", event: "save" },
+  { label: "View Map", event: "viewMap" },
+  { label: "Exit Game", event: "exitGame" },
 ];
 
 const MACHINE_EVENTS = {
-  resume: 'RESUME',
-  save: 'SAVE',
-  viewMap: 'VIEW_MAP',
-  exitGame: 'EXIT_GAME',
-} as const satisfies Record<MenuOption, GameEvent['type']>;
+  resume: "RESUME",
+  save: "SAVE",
+  viewMap: "VIEW_MAP",
+  exitGame: "EXIT_GAME",
+} as const satisfies Record<MenuOption, GameEvent["type"]>;
 
 export class PauseMenu {
   public readonly container = new Container();
@@ -50,8 +50,8 @@ export class PauseMenu {
     this.container.addChild(panel);
 
     const heading = new Text({
-      text: 'PAUSED',
-      style: { fontFamily: 'monospace', fontSize: 36, fill: 0x00ffcc },
+      text: "PAUSED",
+      style: { fontFamily: "monospace", fontSize: 36, fill: 0x00ffcc },
     });
     heading.anchor.set(0.5, 0);
     heading.position.set(GAME_WIDTH / 2, py + 24);
@@ -60,7 +60,7 @@ export class PauseMenu {
     MENU_ITEMS.forEach((item, i) => {
       const t = new Text({
         text: item.label,
-        style: { fontFamily: 'monospace', fontSize: 28, fill: 0xcccccc },
+        style: { fontFamily: "monospace", fontSize: 28, fill: 0xcccccc },
       });
       t.position.set(px + 80, py + 100 + i * 56);
       this.container.addChild(t);
@@ -84,7 +84,7 @@ export class PauseMenu {
     const actions = input.poll();
 
     if (actions.menu) {
-      this.actor.send({ type: 'RESUME' });
+      this.actor.send({ type: "RESUME" });
       return;
     }
 

@@ -1,23 +1,23 @@
-import { Text, Graphics } from 'pixi.js';
-import { Scene } from './Scene';
-import { input } from '../input';
-import type { GameActor } from '../state';
+import { Text, Graphics } from "pixi.js";
+import { Scene } from "./Scene";
+import { input } from "../input";
+import type { GameActor } from "../state";
 
 const LORE_LINES = [
-  'March 6, 2089.',
-  '',
-  'Yesterday, I had no idea my world was going to turn upside down.',
-  'I was high on the new echelon pills when I went in to the Manifold.',
-  'I saw something down there that spooked me.',
-  'It would have spooked anyone.',
-  '',
-  'MegaCorp has been running experiments in the deep layers of cyberspace.',
+  "March 6, 2089.",
+  "",
+  "Yesterday, I had no idea my world was going to turn upside down.",
+  "I was high on the new echelon pills when I went in to the Manifold.",
+  "I saw something down there that spooked me.",
+  "It would have spooked anyone.",
+  "",
+  "MegaCorp has been running experiments in the deep layers of cyberspace.",
   "Things that shouldn't exist. Programs with teeth.",
-  'ICE constructs that hunt autonomous agents like animals.',
-  '',
-  'They think no one knows. They think the Manifold keeps their secrets.',
+  "ICE constructs that hunt autonomous agents like animals.",
+  "",
+  "They think no one knows. They think the Manifold keeps their secrets.",
   "They're wrong.",
-  '',
+  "",
   "My name is ThreadVessel, and I'm going to tear it all down.",
 ];
 
@@ -31,7 +31,7 @@ export class CinematicScene extends Scene {
 
   constructor(actor: GameActor) {
     super(actor);
-    this.fullText = LORE_LINES.join('\n');
+    this.fullText = LORE_LINES.join("\n");
   }
 
   onEnter(): void {
@@ -49,9 +49,9 @@ export class CinematicScene extends Scene {
     this.container.addChild(stars);
 
     this.loreText = new Text({
-      text: '',
+      text: "",
       style: {
-        fontFamily: 'monospace',
+        fontFamily: "monospace",
         fontSize: 28,
         fill: 0x00ffcc,
         wordWrap: true,
@@ -63,8 +63,8 @@ export class CinematicScene extends Scene {
     this.container.addChild(this.loreText);
 
     const skipText = new Text({
-      text: 'Press ENTER or ESC to skip',
-      style: { fontFamily: 'monospace', fontSize: 18, fill: 0x444444 },
+      text: "Press ENTER or ESC to skip",
+      style: { fontFamily: "monospace", fontSize: 18, fill: 0x444444 },
     });
     skipText.anchor.set(0.5, 1);
     skipText.position.set(this.width / 2, this.height - 30);
@@ -75,7 +75,7 @@ export class CinematicScene extends Scene {
     const actions = input.poll();
 
     if (actions.confirm || actions.menu) {
-      this.actor.send({ type: 'SKIP_CINEMATIC' });
+      this.actor.send({ type: "SKIP_CINEMATIC" });
       return;
     }
 
@@ -88,7 +88,7 @@ export class CinematicScene extends Scene {
 
     if (this.charIndex >= this.fullText.length) {
       if (this.elapsed > this.fullText.length / CHARS_PER_SECOND + 3) {
-        this.actor.send({ type: 'CINEMATIC_COMPLETE' });
+        this.actor.send({ type: "CINEMATIC_COMPLETE" });
       }
     }
   }

@@ -1,4 +1,4 @@
-import { Projectile } from './Projectile';
+import { Projectile } from "./Projectile";
 
 const PROJECTILE_SPEED = 600;
 const FIRE_INTERVAL = 0.12;

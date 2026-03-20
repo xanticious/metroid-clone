@@ -1,6 +1,6 @@
-import type { SaveSlot, SaveData } from '../types';
+import type { SaveSlot, SaveData } from "../types";
 
-const STORAGE_PREFIX = 'su_save_';
+const STORAGE_PREFIX = "su_save_";
 
 export function writeSave(data: SaveData): void {
   const key = STORAGE_PREFIX + data.slot;
@@ -26,11 +26,11 @@ export function createNewSave(slot: SaveSlot): SaveData {
   return {
     slot,
     playTime: 0,
-    currentArea: 'underworks',
-    currentWorld: 'irl',
+    currentArea: "underworks",
+    currentWorld: "irl",
     items: [],
     abilities: [],
-    weapons: ['pulsePistol'],
+    weapons: ["pulsePistol"],
     health: 99,
     maxHealth: 99,
     ammo: 30,

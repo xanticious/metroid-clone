@@ -1,11 +1,11 @@
-import { Text, Graphics, Container } from 'pixi.js';
-import { Scene } from './Scene';
-import { input } from '../input';
-import { loadSave } from '../save/SaveManager';
-import type { GameActor } from '../state';
-import type { SaveSlot, SaveData } from '../types';
+import { Text, Graphics, Container } from "pixi.js";
+import { Scene } from "./Scene";
+import { input } from "../input";
+import { loadSave } from "../save/SaveManager";
+import type { GameActor } from "../state";
+import type { SaveSlot, SaveData } from "../types";
 
-const SLOTS: SaveSlot[] = ['A', 'B', 'C'];
+const SLOTS: SaveSlot[] = ["A", "B", "C"];
 
 export class SaveSelectScene extends Scene {
   private selectedIndex = 0;
@@ -23,8 +23,8 @@ export class SaveSelectScene extends Scene {
     this.container.addChild(bg);
 
     const heading = new Text({
-      text: 'SELECT SAVE SLOT',
-      style: { fontFamily: 'monospace', fontSize: 48, fill: 0x00ffcc },
+      text: "SELECT SAVE SLOT",
+      style: { fontFamily: "monospace", fontSize: 48, fill: 0x00ffcc },
     });
     heading.anchor.set(0.5, 0);
     heading.position.set(this.width / 2, 80);
@@ -41,7 +41,7 @@ export class SaveSelectScene extends Scene {
 
       const t = new Text({
         text: label,
-        style: { fontFamily: 'monospace', fontSize: 30, fill: 0xcccccc },
+        style: { fontFamily: "monospace", fontSize: 30, fill: 0xcccccc },
       });
       t.position.set(80, 0);
       c.addChild(t);
@@ -56,8 +56,8 @@ export class SaveSelectScene extends Scene {
     this.updateCursor();
 
     const hint = new Text({
-      text: 'ESC \u2013 Back to title',
-      style: { fontFamily: 'monospace', fontSize: 20, fill: 0x666666 },
+      text: "ESC \u2013 Back to title",
+      style: { fontFamily: "monospace", fontSize: 20, fill: 0x666666 },
     });
     hint.anchor.set(0.5, 1);
     hint.position.set(this.width / 2, this.height - 40);
@@ -68,7 +68,7 @@ export class SaveSelectScene extends Scene {
     const actions = input.poll();
 
     if (actions.menu) {
-      this.actor.send({ type: 'RETURN_TO_TITLE' });
+      this.actor.send({ type: "RETURN_TO_TITLE" });
       return;
     }
 
@@ -84,12 +84,12 @@ export class SaveSelectScene extends Scene {
 
     if (actions.confirm) {
       const slot = SLOTS[this.selectedIndex];
-      this.actor.send({ type: 'SELECT_SLOT', slot });
+      this.actor.send({ type: "SELECT_SLOT", slot });
       const save = this.saves[this.selectedIndex];
       if (save) {
-        this.actor.send({ type: 'SLOT_CONTINUE', saveData: save });
+        this.actor.send({ type: "SLOT_CONTINUE", saveData: save });
       } else {
-        this.actor.send({ type: 'SLOT_NEW_GAME' });
+        this.actor.send({ type: "SLOT_NEW_GAME" });
       }
     }
   }
@@ -107,5 +107,5 @@ function formatTime(ms: number): string {
   const h = Math.floor(totalSeconds / 3600);
   const m = Math.floor((totalSeconds % 3600) / 60);
   const s = totalSeconds % 60;
-  return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }

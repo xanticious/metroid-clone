@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.12.0" orientation="orthogonal" renderorder="right-down" width="50" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="20">
+ <properties>
+  <property name="area" value="underworks"/>
+  <property name="doorLeft" value="intro_room_04"/>
+  <property name="id" value="intro_room_05"/>
+  <property name="isBossRoom" value="true"/>
+  <property name="world" value="irl"/>
+ </properties>
+ <tileset firstgid="1" source="placeholder.tsx"/>
+ <objectgroup id="2" name="Collisions">
+  <object id="1" x="0" y="0" width="32" height="800"/>
+  <object id="2" x="32" y="0" width="1568" height="32"/>
+  <object id="3" x="1568" y="0" width="32" height="800"/>
+  <object id="4" x="0" y="768" width="1600" height="32"/>
+  <object id="5" x="32" y="672" width="128" height="32"/>
+  <object id="6" x="1440" y="672" width="128" height="32"/>
+ </objectgroup>
+ <objectgroup id="3" name="Entities">
+  <object id="10" name="player_spawn" x="96" y="752">
+   <properties>
+    <property name="type" value="player_spawn"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="11" name="door_left" x="0" y="656" width="60" height="112">
+   <properties>
+    <property name="type" value="door_left"/>
+    <property name="target" value="intro_room_04"/>
+   </properties>
+  </object>
+  <object id="12" name="intro_boss" x="800" y="736">
+   <properties>
+    <property name="type" value="intro_boss"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="13" name="auto_save" x="96" y="752">
+   <properties>
+    <property name="type" value="auto_save"/>
+   </properties>
+   <point/>
+  </object>
+ </objectgroup>
+</map>

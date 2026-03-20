@@ -1,16 +1,16 @@
-import { Application } from 'pixi.js';
-import { createGameActor } from './state';
-import { SceneManager, topLevelState } from './core';
-import { input } from './input';
-import { GAME_WIDTH, GAME_HEIGHT } from './types';
+import { Application } from "pixi.js";
+import { createGameActor } from "./state";
+import { SceneManager, topLevelState } from "./core";
+import { input } from "./input";
+import { GAME_WIDTH, GAME_HEIGHT } from "./types";
 import {
   SplashScene,
   SaveSelectScene,
   CinematicScene,
   GameScene,
   CreditsScene,
-} from './scenes';
-import type { Scene } from './scenes/Scene';
+} from "./scenes";
+import type { Scene } from "./scenes/Scene";
 
 async function bootstrap() {
   const app = new Application();
@@ -24,7 +24,7 @@ async function bootstrap() {
   });
   document.body.appendChild(app.canvas);
   scaleToFit(app.canvas);
-  window.addEventListener('resize', () => scaleToFit(app.canvas));
+  window.addEventListener("resize", () => scaleToFit(app.canvas));
 
   input.attach(window);
 
@@ -32,19 +32,19 @@ async function bootstrap() {
 
   function sceneForState(stateKey: string): Scene | null {
     switch (stateKey) {
-      case 'splash':
+      case "splash":
         return new SplashScene(actor);
-      case 'saveSelect':
+      case "saveSelect":
         return new SaveSelectScene(actor);
-      case 'openingCinematic':
+      case "openingCinematic":
         return new CinematicScene(actor);
-      case 'gameplay':
+      case "gameplay":
         return new GameScene(actor);
-      case 'credits':
+      case "credits":
         return new CreditsScene(actor);
-      case 'gameOver':
+      case "gameOver":
         return new SplashScene(actor);
-      case 'victory':
+      case "victory":
         return new CreditsScene(actor);
       default:
         return null;
@@ -52,7 +52,7 @@ async function bootstrap() {
   }
 
   const sceneManager = new SceneManager(app, sceneForState);
-  sceneManager.transitionTo('splash');
+  sceneManager.transitionTo("splash");
 
   actor.subscribe((snapshot) => {
     const stateKey = topLevelState(snapshot.value);
@@ -72,7 +72,7 @@ function scaleToFit(canvas: HTMLCanvasElement): void {
   const scale = Math.min(scaleX, scaleY);
   canvas.style.width = `${GAME_WIDTH * scale}px`;
   canvas.style.height = `${GAME_HEIGHT * scale}px`;
-  canvas.style.position = 'absolute';
+  canvas.style.position = "absolute";
   canvas.style.left = `${(window.innerWidth - GAME_WIDTH * scale) / 2}px`;
   canvas.style.top = `${(window.innerHeight - GAME_HEIGHT * scale) / 2}px`;
 }

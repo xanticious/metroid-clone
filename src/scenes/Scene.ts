@@ -1,6 +1,6 @@
-import { Container } from 'pixi.js';
-import type { GameActor } from '../state';
-import { GAME_WIDTH, GAME_HEIGHT } from '../types';
+import { Container } from "pixi.js";
+import type { GameActor } from "../state";
+import { GAME_WIDTH, GAME_HEIGHT } from "../types";
 
 export abstract class Scene {
   public readonly container = new Container();

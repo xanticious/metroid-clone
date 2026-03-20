@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.12.0" orientation="orthogonal" renderorder="right-down" width="30" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="20">
+ <properties>
+  <property name="area" value="underworks"/>
+  <property name="doorLeft" value="intro_room_02"/>
+  <property name="doorRight" value="intro_room_04"/>
+  <property name="id" value="intro_room_03"/>
+  <property name="isBossRoom" value="false"/>
+  <property name="world" value="irl"/>
+ </properties>
+ <tileset firstgid="1" source="placeholder.tsx"/>
+ <objectgroup id="2" name="Collisions">
+  <object id="1" x="0" y="0" width="32" height="1600"/>
+  <object id="2" x="32" y="0" width="896" height="32"/>
+  <object id="3" x="896" y="0" width="64" height="1600"/>
+  <object id="4" x="0" y="1568" width="960" height="32"/>
+  <object id="5" x="128" y="320" width="224" height="32"/>
+  <object id="6" x="448" y="320" width="224" height="32"/>
+  <object id="7" x="128" y="640" width="224" height="32"/>
+  <object id="8" x="448" y="640" width="224" height="32"/>
+  <object id="9" x="128" y="960" width="224" height="32"/>
+  <object id="10" x="448" y="960" width="224" height="32"/>
+  <object id="11" x="128" y="1280" width="224" height="32"/>
+  <object id="12" x="448" y="1280" width="224" height="32"/>
+  <object id="13" x="32" y="1504" width="128" height="32"/>
+  <object id="14" x="800" y="1504" width="64" height="32"/>
+  <object id="15" name="health_tank_pedestal" x="608" y="288" width="64" height="32"/>
+ </objectgroup>
+ <objectgroup id="3" name="Entities">
+  <object id="16" name="player_spawn" x="60" y="1552">
+   <properties>
+    <property name="type" value="player_spawn"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="17" name="door_left" x="0" y="1456" width="60" height="112">
+   <properties>
+    <property name="type" value="door_left"/>
+    <property name="target" value="intro_room_02"/>
+   </properties>
+  </object>
+  <object id="18" name="door_right" x="900" y="1456" width="60" height="112">
+   <properties>
+    <property name="type" value="door_right"/>
+    <property name="target" value="intro_room_04"/>
+   </properties>
+  </object>
+  <object id="19" name="health_tank" x="640" y="270">
+   <properties>
+    <property name="type" value="health_tank"/>
+   </properties>
+   <point/>
+  </object>
+ </objectgroup>
+</map>

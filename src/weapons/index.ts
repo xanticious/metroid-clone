@@ -1,2 +1,2 @@
-export { Projectile } from './Projectile';
-export { PulsePistol } from './PulsePistol';
+export { Projectile } from "./Projectile";
+export { PulsePistol } from "./PulsePistol";

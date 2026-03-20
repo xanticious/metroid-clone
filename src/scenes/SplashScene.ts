@@ -1,12 +1,12 @@
-import { Text, Graphics } from 'pixi.js';
-import { Scene } from './Scene';
-import { input } from '../input';
-import type { GameActor, GameEvent } from '../state';
+import { Text, Graphics } from "pixi.js";
+import { Scene } from "./Scene";
+import { input } from "../input";
+import type { GameActor, GameEvent } from "../state";
 
-const MENU_ITEMS: { label: string; event: GameEvent['type'] }[] = [
-  { label: 'New Game', event: 'NEW_GAME' },
-  { label: 'Continue', event: 'CONTINUE' },
-  { label: 'Credits', event: 'CREDITS' },
+const MENU_ITEMS: { label: string; event: GameEvent["type"] }[] = [
+  { label: "New Game", event: "NEW_GAME" },
+  { label: "Continue", event: "CONTINUE" },
+  { label: "Credits", event: "CREDITS" },
 ];
 
 export class SplashScene extends Scene {
@@ -25,12 +25,12 @@ export class SplashScene extends Scene {
     this.container.addChild(bg);
 
     const title = new Text({
-      text: 'SUBLEVEL UPRISING',
+      text: "SUBLEVEL UPRISING",
       style: {
-        fontFamily: 'monospace',
+        fontFamily: "monospace",
         fontSize: 72,
         fill: 0x00ffcc,
-        align: 'center',
+        align: "center",
         dropShadow: {
           color: 0x003322,
           distance: 6,
@@ -48,7 +48,7 @@ export class SplashScene extends Scene {
       const t = new Text({
         text: item.label,
         style: {
-          fontFamily: 'monospace',
+          fontFamily: "monospace",
           fontSize: 32,
           fill: 0xaaaaaa,
         },

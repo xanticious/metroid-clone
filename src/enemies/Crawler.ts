@@ -1,4 +1,4 @@
-import type { CollisionRect } from '../maps';
+import type { CollisionRect } from "../maps";
 
 const CRAWLER_W = 28;
 const CRAWLER_H = 20;

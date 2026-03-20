@@ -1,4 +1,4 @@
-import type { CollisionRect } from '../maps';
+import type { CollisionRect } from "../maps";
 
 const HALF_W = 4;
 const HALF_H = 2;

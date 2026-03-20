@@ -1,4 +1,4 @@
-import { GAME_WIDTH, GAME_HEIGHT, CAMERA_ZOOM } from '../types';
+import { GAME_WIDTH, GAME_HEIGHT, CAMERA_ZOOM } from "../types";
 
 export class Camera {
   x = 0;
