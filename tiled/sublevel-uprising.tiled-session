@@ -12,6 +12,38 @@
                 "y": 543.8767650834404
             }
         },
+        "intro_room_02.tmx": {
+            "scale": 0.778860294117647,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 639.3957989143263,
+                "y": 544.385178192117
+            }
+        },
+        "intro_room_03.tmx": {
+            "scale": 0.529625,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 479.58461175359923,
+                "y": 800.5664385178192
+            }
+        },
+        "intro_room_04.tmx": {
+            "scale": 0.9099218749999999,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 639.6153515926849,
+                "y": 319.80767579634244
+            }
+        },
+        "intro_room_05.tmx": {
+            "scale": 0.7279374999999999,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 952.0048081050916,
+                "y": 399.7595947454281
+            }
+        },
         "placeholder.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1

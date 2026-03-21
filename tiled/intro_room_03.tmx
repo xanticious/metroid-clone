@@ -22,7 +22,7 @@
   <object id="10" x="448" y="960" width="224" height="32"/>
   <object id="11" x="128" y="1280" width="224" height="32"/>
   <object id="12" x="448" y="1280" width="224" height="32"/>
-  <object id="13" x="32" y="1504" width="128" height="32"/>
+  <object id="13" x="128" y="1504" width="128" height="32"/>
   <object id="14" x="800" y="1504" width="64" height="32"/>
   <object id="15" name="health_tank_pedestal" x="608" y="288" width="64" height="32"/>
  </objectgroup>
@@ -35,14 +35,14 @@
   </object>
   <object id="17" name="door_left" x="0" y="1456" width="60" height="112">
    <properties>
-    <property name="type" value="door_left"/>
     <property name="target" value="intro_room_02"/>
+    <property name="type" value="door_left"/>
    </properties>
   </object>
   <object id="18" name="door_right" x="900" y="1456" width="60" height="112">
    <properties>
-    <property name="type" value="door_right"/>
     <property name="target" value="intro_room_04"/>
+    <property name="type" value="door_right"/>
    </properties>
   </object>
   <object id="19" name="health_tank" x="640" y="270">

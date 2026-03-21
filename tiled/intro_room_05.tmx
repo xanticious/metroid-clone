@@ -25,8 +25,8 @@
   </object>
   <object id="11" name="door_left" x="0" y="656" width="60" height="112">
    <properties>
-    <property name="type" value="door_left"/>
     <property name="target" value="intro_room_04"/>
+    <property name="type" value="door_left"/>
    </properties>
   </object>
   <object id="12" name="intro_boss" x="800" y="736">
